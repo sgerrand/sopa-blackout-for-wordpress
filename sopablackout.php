@@ -74,8 +74,9 @@ if ( ! class_exists('SOPA_Blackout_Filter') ) {
          * @return bool
          */
         function is_sopa_blackout_time() {
-            $now        = mktime();
-            $target     = strtotime(self::DATE_BLACKOUT);
+            $now        = gmmktime();
+            $target     = split('-', self::DATE_BLACKOUT);
+            $target     = gmmktime($target[0], $target[1], $target[2]);
             $interval   = 60 * 60 * 24;
             $start      = $target - $interval;
             $end        = $target + $interval;
