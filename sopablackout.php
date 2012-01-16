@@ -3,10 +3,10 @@
  *  * @package SOPA Blackout
  *   */
 /*
- * Plugin Name: SOPA Blackout
+ * Plugin Name: SOPA Blackout JS
  * Plugin URI: https://github.com/sgerrand/sopa-blackout-for-wordpress
  * Description: SOPA Blackout helps you support the SOPA Blackout by inserting JavaScript into your page head on 18 January 2012.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Sasha Gerrand
  * Author URI: http://sasha.gerrand.id.au/about
  * License: GPLv2
@@ -41,16 +41,10 @@ if ( ! class_exists('SOPA_Blackout_Filter') ) {
          * @var string
          * @access public
          */
-        const DATE_BLACKOUT     = '2012-01-18';
-
-        /**
-         * Date format string.
-         *
-         * @var string
-         * @access public
-         */
-        const DATE_FORMAT       = '%Y-%m-%d';
-
+        const BLACKOUT_YEAR = '2012';
+ 	    const BLACKOUT_MONTH = '01';
+  	    const BLACKOUT_DAY = '18';
+	   
         /**
          * URL for source JavaScript file.
          *
@@ -75,23 +69,22 @@ if ( ! class_exists('SOPA_Blackout_Filter') ) {
          */
         function is_sopa_blackout_time() {
             $now        = gmmktime();
-            $target     = split('-', self::DATE_BLACKOUT);
-            $target     = gmmktime($target[0], $target[1], $target[2]);
-            $interval   = 60 * 60 * 24;
+		  $target     = gmmktime(0, 0, 0, self::BLACKOUT_MONTH, self::BLACKOUT_DAY, self::BLACKOUT_YEAR);
+		  $interval   = 60 * 60 * 24;
             $start      = $target - $interval;
             $end        = $target + $interval;
 
             return ($now >= $start && $now <= $end);
         }
 
-        /**
+	   /**
          * Output the relevant JavaScript
          *
          * @return void
          */
         function enqueue_scripts() {
             $src = plugins_url(self::JAVASCRIPT_FNAME, __FILE__);
-
+		  
             if (self::is_sopa_blackout_time()) {
                 wp_enqueue_script('sopablackout', $src);
             }
