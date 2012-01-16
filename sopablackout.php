@@ -3,10 +3,10 @@
  *  * @package SOPA Blackout
  *   */
 /*
- * Plugin Name: SOPA Blackout
+ * Plugin Name: SOPA Blackout JS
  * Plugin URI: https://github.com/sgerrand/sopa-blackout-for-wordpress
- * Description: SOPA Blackout helps you support the SOPA Blackout by inserting JavaScript into your page head on 18 January 2012.
- * Version: 1.0.0
+ * Description: SOPA Blackout JS helps you support the SOPA Blackout by inserting JavaScript into your page head on 18 January 2012.
+ * Version: 1.0.1
  * Author: Sasha Gerrand
  * Author URI: http://sasha.gerrand.id.au/about
  * License: GPLv2
@@ -27,13 +27,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA 
  * */
 
-define('SOPA_BLACKOUT_VERSION', '1.0.0');
+define('SOPA_BLACKOUT_JS_VERSION', '1.0.1');
 
-if ( ! class_exists('SOPA_Blackout_Filter') ) {
+if ( ! class_exists('SOPA_Blackout_JS_Filter') ) {
     /**
      * Filter functions for WordPress
      */
-    class SOPA_Blackout_Filter {
+    class SOPA_Blackout_JS_Filter {
 
         /**
          * SOPA Blackout date, in ISO-8601 format.
@@ -42,14 +42,6 @@ if ( ! class_exists('SOPA_Blackout_Filter') ) {
          * @access public
          */
         const DATE_BLACKOUT     = '2012-01-18';
-
-        /**
-         * Date format string.
-         *
-         * @var string
-         * @access public
-         */
-        const DATE_FORMAT       = '%Y-%m-%d';
 
         /**
          * URL for source JavaScript file.
@@ -68,26 +60,22 @@ if ( ! class_exists('SOPA_Blackout_Filter') ) {
         const JAVASCRIPT_FNAME  = 'sopablackout.js';
 
         /**
-         * Determine whether now is SOPA Blackout time, 
-         * +/- 24 hours
+         * Determine if the blog is in SOPA Blackout time
+         *
+         * Method appropriated from https://github.com/chrisguitarguy/WP-SOPA-Blackout/blob/master/wp-sopa-blackout.php
          *
          * @return bool
+         * @access public
          */
         function is_sopa_blackout_time() {
-            $now        = gmmktime();
-            $target     = split('-', self::DATE_BLACKOUT);
-            $target     = gmmktime($target[0], $target[1], $target[2]);
-            $interval   = 60 * 60 * 24;
-            $start      = $target - $interval;
-            $end        = $target + $interval;
-
-            return ($now >= $start && $now <= $end);
+            return ( ! is_admin() && date('Y-m-d', current_time('timestamp')) == self::DATE_BLACKOUT );
         }
 
         /**
          * Output the relevant JavaScript
          *
          * @return void
+         * @access public
          */
         function enqueue_scripts() {
             $src = plugins_url(self::JAVASCRIPT_FNAME, __FILE__);
@@ -99,4 +87,4 @@ if ( ! class_exists('SOPA_Blackout_Filter') ) {
     }
 }
 
-add_action('wp_enqueue_scripts', array('SOPA_Blackout_Filter','enqueue_scripts'), 2);
+add_action('wp_enqueue_scripts', array('SOPA_Blackout_JS_Filter','enqueue_scripts'), 2);
