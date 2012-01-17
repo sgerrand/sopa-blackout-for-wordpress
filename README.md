@@ -5,7 +5,7 @@
 * Tags: sopa, sopa blackout, protectip, censorship
 * Requires at least: 2.8
 * Tested up to: 3.2.1
-* Stable tag: 1.0.0
+* Stable tag: 1.0.1
 
 Show your support for SOPA Blackout Day.
 
@@ -34,10 +34,15 @@ This section describes how to install the plugin and get it working.
 
 More information on this event is available on the [Reddit website][r_url].
 
-  [r_url]: http://blog.reddit.com/2012/01/stopped-they-must-be-on-this-all.html)
+  [r_url]: http://blog.reddit.com/2012/01/stopped-they-must-be-on-this-all.html
 
-  ## Changelog ##
+## Changelog ##
 
-  ### 1.0.0 ###
+### 1.0.1 ###
 
-  * Initial release.
+* Updated to use the date and timezone configured on the WordPress install for determining the current date.
+* Renamed main plugin class name.
+
+### 1.0.0 ###
+
+* Initial release.
