@@ -13,18 +13,37 @@
 			obj.attachEvent("on"+type, obj[type+fn]);
 		}
 	};
+	// Thanks http://javascript.nwbox.com/IEContentLoaded/
+	// for this
+	var IEContentLoaded = function(w, fn) {
+		var d = w.document, done = false,
+		init = function () {
+			if (!done) {
+				done = true;
+				fn();
+			}
+		};
+		(function () {
+			try {
+				d.documentElement.doScroll('left');
+			} catch (e) {
+				setTimeout(arguments.callee, 50);
+				return;
+			}
+			init();
+		})();
+		d.onreadystatechange = function() {
+			if (d.readyState == 'complete') {
+				d.onreadystatechange = null;
+				init();
+			}
+		};
+	}
 	var onDomReady = function(fn){
 		if (document.addEventListener){
 			document.addEventListener('DOMContentLoaded', fn, false);
 		}else{
-			if (!document.uniqueID && document.expando){return;};
-			var tempNode = document.createElement('document:ready');
-			try{
-				tempNode.doScroll('left');
-				fn();
-			}catch (err){
-				setTimeout(arguments.callee, 0);
-			}
+			IEContentLoaded(window, fn);
 		}
 	};
 	var getStyle = function(e, prop){
@@ -66,19 +85,43 @@
 		}
 		return elem;
 	};
+	var getOpts = function(){
+		var ret = {};
+		for (var key in SopaBlackout.DEFAULTS){
+			var k = 'sopablackout_' + key;
+			ret[key] = (typeof window[k] === 'undefined') ? SopaBlackout.DEFAULTS[key] : window[k];
+		}
+		return ret;
+	};
+	var dateMatches = function(spec){
+		spec.push(false); spec.push(false); spec.push(false);
+		var today = new Date();
+		if ((spec[0] !== false && today.getFullYear() !== spec[0]) || 
+				(spec[1] !== false && today.getMonth() + 1 !== spec[1]) ||
+				(spec[2] !== false && today.getDate() !== spec[2])){
+			return false;
+		}
+		return true;
+	};
 
-	SopaBlackout.VERSION = '0.1.0';
+	SopaBlackout.VERSION = '0.2.0';
 	SopaBlackout.MIN_HEIGHT = 100;
 	SopaBlackout.HEADER_TEXT = "This is what the web could look like under the Stop Online Piracy Act.";
 	SopaBlackout.CONTINUE_TEXT = "(click anywhere to continue)";
-	SopaBlackout.blackout = function(obj_id, srsbzns){
+	SopaBlackout.ZINDEX = Math.pow(2, 31) - 2;
+	SopaBlackout.DEFAULTS = {
+		'id': false,
+		'srsbzns': false,
+		'on': false
+	};
+	SopaBlackout.blackout = function(opts){
 		var obj;
 		var body = document.body;
-		if (obj_id === false){
+		if (opts['id'] === false){
 			obj = body;
 			height = "100%";
 		}else{
-			obj = document.getElementById(obj_id);
+			obj = document.getElementById(opts['id']);
 			var height = parseInt(getStyle(obj, 'height'), 10);
 			height = height > SopaBlackout.MIN_HEIGHT ? height : SopaBlackout.MIN_HEIGHT;
 		}
@@ -91,7 +134,7 @@
 				backgroundColor: 'black',
 				textAlign: 'center',
 				paddingTop: '10px',
-				zIndex: Number.MAX_VALUE,
+				zIndex: SopaBlackout.ZINDEX,
 				height: height,
 				color: '#999'},
 			create('h1', {color: '#999'}, txt(SopaBlackout.HEADER_TEXT)),
@@ -101,7 +144,7 @@
 				txt(" or "),
 				create('a', {href: "http://sopablackout.org/learnmore"}, txt("find out more")))
 		);
-		if (srsbzns !== true){
+		if (opts['srsbzns'] !== true){
 			blackout.appendChild(create('p', {paddingTop: '250px', color: '#333'}, txt(SopaBlackout.CONTINUE_TEXT)));
 			addEvent(blackout, 'click', function(e){
 				body.removeChild(blackout);
@@ -110,9 +153,11 @@
 		body.appendChild(blackout);
 	};
 	SopaBlackout.go = function(){
-		var obj_id = (typeof sopablackout_id === 'undefined') ? false : sopablackout_id;
-		var srsbzns = (typeof sopablackout_srsbzns === 'undefined') ? false : sopablackout_srsbzns;
-		SopaBlackout.blackout(obj_id, srsbzns);
+		var opts = getOpts();
+		if (opts['on'] !== false && !dateMatches(opts['on'])){
+			return;
+		}
+		SopaBlackout.blackout(opts);
 	};
 
 	onDomReady(SopaBlackout.go);
