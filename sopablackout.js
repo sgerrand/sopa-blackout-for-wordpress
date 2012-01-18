@@ -38,7 +38,7 @@
 				init();
 			}
 		};
-	}
+	};
 	var onDomReady = function(fn){
 		if (document.addEventListener){
 			document.addEventListener('DOMContentLoaded', fn, false);
