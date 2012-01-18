@@ -38,6 +38,10 @@ More information on this event is available on the [Reddit website][r_url].
 
 ## Changelog ##
 
+### 1.0.2 ###
+
+* Updated to use minimized version of JavaScript file.
+
 ### 1.0.1 ###
 
 * Updated to use the date and timezone configured on the WordPress install for determining the current date.

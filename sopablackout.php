@@ -6,7 +6,7 @@
  * Plugin Name: SOPA Blackout JS
  * Plugin URI: https://github.com/sgerrand/sopa-blackout-for-wordpress
  * Description: SOPA Blackout JS helps you support the SOPA Blackout by inserting JavaScript into your page head on 18 January 2012.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Sasha Gerrand
  * Author URI: http://sasha.gerrand.id.au/about
  * License: GPLv2
@@ -60,6 +60,14 @@ if ( ! class_exists('SOPA_Blackout_JS_Filter') ) {
         const JAVASCRIPT_FNAME  = 'sopablackout.js';
 
         /**
+         * Minimized version of JavaScript filename.
+         *
+         * @var string
+         * @access public
+         */
+        const JAVASCRIPT_FNAME_MIN = 'sopablackout.min.js';
+
+        /**
          * Determine if the blog is in SOPA Blackout time
          *
          * Method appropriated from https://github.com/chrisguitarguy/WP-SOPA-Blackout/blob/master/wp-sopa-blackout.php
@@ -78,7 +86,7 @@ if ( ! class_exists('SOPA_Blackout_JS_Filter') ) {
          * @access public
          */
         function enqueue_scripts() {
-            $src = plugins_url(self::JAVASCRIPT_FNAME, __FILE__);
+            $src = plugins_url(self::JAVASCRIPT_FNAME_MIN, __FILE__);
 
             if (self::is_sopa_blackout_time()) {
                 wp_enqueue_script('sopablackout', $src);
